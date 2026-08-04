@@ -16,13 +16,12 @@ const router = createRouter({
   component: () => import('@/views/Auth/Login.vue'),
   meta: { guestOnly: true },
 },
-{
-  path: '/dashboard',
-  name: 'dashboard',
-  component: () => import('@/views/DashboardOverview.vue'),
-  meta: { requiresAuth: true },
-},
-
+{ path: '/dashboard', name: 'dashboard', component: () => import('@/views/DashboardOverview.vue'), meta: { requiresAuth: true } },
+{ path: '/dashboard/api-keys', name: 'api-keys', component: () => import('@/views/ApiKeys.vue'), meta: { requiresAuth: true } },
+{ path: '/dashboard/events', name: 'events', component: () => import('@/views/EventsPage.vue'), meta: { requiresAuth: true } },
+{ path: '/dashboard/webhooks', name: 'webhooks', component: () => import('@/views/WebhooksPage.vue'), meta: { requiresAuth: true } },
+{ path: '/dashboard/settlements', name: 'settlements', component: () => import('@/views/SettlementsPage.vue'), meta: { requiresAuth: true } },
+{ path: '/dashboard/settings', name: 'settings', component: () => import('@/views/Settings.vue'), meta: { requiresAuth: true } },
     
   ]
 })

@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useRouter, RouterView } from 'vue-router'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 
 const router = useRouter()
@@ -16,8 +16,15 @@ const navItems = [
 ]
 
 const drawer = ref(true)
+const isMobile = ref(false)
+
 const initials = computed(() =>
-  (auth.partner?.companyName || 'Q P').split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase()
+  (auth.partner?.companyName || 'Q P')
+    .split(' ')
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
 )
 
 function handleLogout() {
@@ -28,17 +35,32 @@ function handleLogout() {
 function toggleEnv() {
   auth.setEnvironment(auth.environment === 'sandbox' ? 'live' : 'sandbox')
 }
+
+function checkScreen() {
+  isMobile.value = window.innerWidth < 960
+  drawer.value = !isMobile.value
+}
+
+onMounted(() => {
+  checkScreen()
+  window.addEventListener('resize', checkScreen)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkScreen)
+})
 </script>
 
 <template>
   <v-app>
     <v-layout>
       <v-navigation-drawer
-        v-model="drawer"
-        permanent
-        class="!bg-ink"
-        width="260"
-      >
+  v-model="drawer"
+  :permanent="!isMobile"
+  :temporary="isMobile"
+  width="260"
+  class="!bg-ink"
+>
         <div class="px-6 pt-6 pb-4">
           <p class="font-display text-2xl font-bold text-paper tracking-tight">
             Quidly
@@ -77,32 +99,50 @@ function toggleEnv() {
 
 
       <v-main>
-        <header class="flex items-center justify-between px-8 h-16 border-b border-black/5 bg-white">
-          <div>
-            <p class="font-display text-lg font-semibold text-ink leading-none">
-              {{ auth.partner?.companyName || 'Partner' }}
-            </p>
-          </div>
+       <header
+  class="flex items-center justify-between px-4 md:px-8 h-16 border-b border-black/5 bg-white"
+>
+  <div class="flex items-center gap-3">
+    <!-- Mobile Menu -->
+    <v-btn
+      v-if="isMobile"
+      icon
+      variant="text"
+      @click="drawer = !drawer"
+    >
+      <v-icon>mdi-menu</v-icon>
+    </v-btn>
 
-          <div class="flex items-center gap-4">
-            <button
-              @click="toggleEnv"
-              class="font-mono text-xs px-3 py-1.5 rounded-full border transition-colors"
-              :class="auth.environment === 'sandbox'
-                ? 'bg-amber-50 border-amber-300 text-amber-700'
-                : 'bg-green-50 border-green-300 text-success'"
-            >
-              ● {{ auth.environment === 'sandbox' ? 'Sandbox mode' : 'Live mode' }}
-            </button>
+    <div>
+      <p class="font-display text-base md:text-lg font-semibold text-ink leading-none">
+        {{ auth.partner?.companyName || 'Partner' }}
+      </p>
+    </div>
+  </div>
 
-            <div class="w-9 h-9 rounded-full bg-ink text-gold font-display font-bold flex items-center justify-center text-sm">
-              {{ initials }}
-            </div>
-          </div>
-        </header>
+  <div class="flex items-center gap-2 md:gap-4">
+    <button
+      @click="toggleEnv"
+      class="font-mono text-[10px] md:text-xs px-2 md:px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap"
+      :class="
+        auth.environment === 'sandbox'
+          ? 'bg-amber-50 border-amber-300 text-amber-700'
+          : 'bg-green-50 border-green-300 text-success'
+      "
+    >
+      ● {{ auth.environment === 'sandbox' ? 'Sandbox' : 'Live' }}
+    </button>
+
+    <div
+      class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-ink text-gold font-display font-bold flex items-center justify-center text-xs md:text-sm"
+    >
+      {{ initials }}
+    </div>
+  </div>
+</header>
 
 
-        <div class="p-8">
+       <div class="p-4 md:p-6 lg:p-8">
           <slot />
         </div>
       </v-main>
