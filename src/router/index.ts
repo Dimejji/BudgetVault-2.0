@@ -14,7 +14,13 @@ const router = createRouter({
   path: '/',
   name: 'login',
   component: () => import('@/views/Auth/Login.vue'),
-  meta: { guestOnly: true },
+  meta: { guestOnly: true }
+},
+{
+  path: '/widget',
+  name: 'widget',
+  component: () => import('@/views/Widget.vue'),
+   meta: { requiresAuth: true }
 },
 { path: '/dashboard', name: 'dashboard', component: () => import('@/views/DashboardOverview.vue'), meta: { requiresAuth: true } },
 { path: '/dashboard/api-keys', name: 'api-keys', component: () => import('@/views/ApiKeys.vue'), meta: { requiresAuth: true } },
