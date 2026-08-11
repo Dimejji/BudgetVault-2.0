@@ -49,12 +49,12 @@
 
         <!-- Tabs -->
         <div class="tabs">
-          <button
+          <!-- <button
             :class="['tab', { active: method === 'card' }]"
             @click="method = 'card'"
           >
             Card
-          </button>
+          </button> -->
           <button
             :class="['tab', { active: method === 'bank_transfer' }]"
             @click="method = 'bank_transfer'"
@@ -122,9 +122,9 @@
         <!-- Bank transfer -->
         <div v-else class="form">
           <div class="bank-details">
-            <div class="row"><span>Bank</span><strong>Quidly Test Bank</strong></div>
-            <div class="row"><span>Account number</span><strong>0123456789</strong></div>
-            <div class="row"><span>Account name</span><strong>Quidly Escrow Ltd</strong></div>
+            <div class="row"><span>Bank</span><strong>Opay</strong></div>
+            <div class="row"><span>Account number</span><strong>9132378328</strong></div>
+            <div class="row"><span>Account name</span><strong>Ifiok Usanga</strong></div>
             <div class="row"><span>Amount</span><strong>{{ formattedAmount }}</strong></div>
             <div class="row"><span>Reference</span><strong>{{ session.reference }}</strong></div>
           </div>
@@ -135,9 +135,9 @@
             <button class="btn primary" :disabled="processing" @click="submitBankTransfer(true)">
               {{ processing ? 'Processing…' : "I've made the transfer" }}
             </button>
-            <button class="btn ghost" :disabled="processing" @click="submitBankTransfer(false)">
+            <!-- <button class="btn ghost" :disabled="processing" @click="submitBankTransfer(false)">
               Simulate failed transfer
-            </button>
+            </button> -->
           </div>
         </div>
       </div>
@@ -165,13 +165,13 @@ const session = reactive({
   reference: '',
   amount: 0,
   currency: 'NGN',
-  eventName: 'Test Event',
+  eventName: '',
   customerEmail: '',
   returnUrl: '',
 })
 
 const loadingSession = ref(true)
-const method = ref('card')
+const method = ref('bank_transfer')
 const processing = ref(false)
 const formError = ref('')
 const result = ref(null) // { status: 'completed' | 'failed', reason }
