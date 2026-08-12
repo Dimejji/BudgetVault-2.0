@@ -29,7 +29,7 @@
         <h3>{{ result.status === 'completed' ? 'Payment successful' : 'Payment failed' }}</h3>
         <p class="muted">Reference: {{ session.reference }}</p>
         <p v-if="result.status !== 'completed'" class="muted">{{ result.reason }}</p>
-        <button class="btn primary" @click="returnToMerchant">
+        <button class="btn m-4 primary" @click="returnToMerchant">
           Continue
         </button>
       </div>
@@ -47,98 +47,94 @@
           </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="tabs">
-          <!-- <button
-            :class="['tab', { active: method === 'card' }]"
-            @click="method = 'card'"
-          >
-            Card
-          </button> -->
+        <!-- Bank transfer, styled like the dummy checkout widget -->
+        <div class="transfer-card">
+          <!-- Amount -->
+          <div class="transfer-amount">
+            <p class="transfer-label">Amount to Send</p>
+
+            <div class="transfer-copy-row">
+              <p class="transfer-amount-value">{{ formattedAmount }}</p>
+
+              <button
+                type="button"
+                class="copy-btn"
+                :title="copiedField === 'amount' ? 'Copied!' : 'Copy amount'"
+                @click="copyText(rawAmountString, 'amount')"
+              >
+                {{ copiedField === 'amount' ? '✓' : '📋' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Bank name -->
+          <div class="transfer-row-block">
+            <p class="transfer-sublabel">Bank Name</p>
+            <p class="transfer-bank-name">Opay</p>
+          </div>
+
+          <!-- Account number -->
+          <div class="transfer-row-block bordered">
+            <p class="transfer-sublabel">Account Number</p>
+
+            <div class="transfer-copy-row">
+              <p class="transfer-account-number">9132378328</p>
+
+              <button
+                type="button"
+                class="copy-btn"
+                :title="copiedField === 'account' ? 'Copied!' : 'Copy account number'"
+                @click="copyText('9132378328', 'account')"
+              >
+                  <i :class="copiedField === 'account' ? 'fas fa-check' : 'fas fa-copy'"></i>
+              </button>
+            </div>
+
+            <p class="transfer-account-alias">Ifiok Usanga</p>
+          </div>
+
+          <!-- Reference -->
+          <div class="transfer-row-block">
+            <p class="transfer-sublabel">Reference</p>
+
+            <div class="transfer-copy-row">
+              <p class="transfer-reference">{{ session.reference }}</p>
+
+              <button
+  type="button"
+  class="copy-btn"
+  :title="copiedField === 'reference' ? 'Copied!' : 'Copy reference'"
+  @click="copyText(session.reference, 'reference')"
+>
+  <i :class="copiedField === 'reference' ? 'fas fa-check' : 'fas fa-copy'"></i>
+</button>
+            </div>
+          </div>
+
+          <!-- Expiry -->
+          <div class="transfer-expiry">
+            <p>
+              This session expires in
+              <span class="transfer-expiry-time">{{ formattedTime }}</span>.
+              Make your transfer before it expires.
+            </p>
+          </div>
+
+          <p class="muted small hint">
+            In test mode, click the button below to simulate payment verification.
+          </p>
+
+          <div v-if="bankError" class="form-error">{{ bankError }}</div>
+
+          <!-- Confirmation -->
           <button
-            :class="['tab', { active: method === 'bank_transfer' }]"
-            @click="method = 'bank_transfer'"
+            type="button"
+            class="transfer-confirm-btn m-4"
+            :disabled="processing"
+            @click="submitBankTransfer(true)"
           >
-            Bank Transfer
+            {{ processing ? 'Verifying…' : `I'VE SENT THE MONEY (${formattedAmount})` }}
           </button>
-        </div>
-
-        <!-- Card form -->
-        <form v-if="method === 'card'" @submit.prevent="submitCard" class="form">
-          <label class="field">
-            <span>Card number</span>
-            <input
-              v-model="card.number"
-              type="text"
-              inputmode="numeric"
-              maxlength="19"
-              placeholder="4242 4242 4242 4242"
-              @input="card.number = formatCardNumber(card.number)"
-              required
-            />
-          </label>
-
-          <div class="field-row">
-            <label class="field">
-              <span>Expiry (MM/YY)</span>
-              <input
-                v-model="card.expiry"
-                type="text"
-                maxlength="5"
-                placeholder="12/28"
-                @input="card.expiry = formatExpiry(card.expiry)"
-                required
-              />
-            </label>
-            <label class="field">
-              <span>CVV</span>
-              <input
-                v-model="card.cvv"
-                type="password"
-                inputmode="numeric"
-                maxlength="4"
-                placeholder="123"
-                required
-              />
-            </label>
-          </div>
-
-          <label class="field">
-            <span>Cardholder name</span>
-            <input v-model="card.name" type="text" placeholder="Jane Doe" required />
-          </label>
-
-          <p v-if="formError" class="form-error">{{ formError }}</p>
-
-          <button class="btn primary" type="submit" :disabled="processing">
-            {{ processing ? 'Processing…' : `Pay ${formattedAmount}` }}
-          </button>
-
-          <p class="test-hint">
-            Test mode: card ending <strong>0000</strong> fails, any other number succeeds.
-          </p>
-        </form>
-
-        <!-- Bank transfer -->
-        <div v-else class="form">
-          <div class="bank-details">
-            <div class="row"><span>Bank</span><strong>Opay</strong></div>
-            <div class="row"><span>Account number</span><strong>9132378328</strong></div>
-            <div class="row"><span>Account name</span><strong>Ifiok Usanga</strong></div>
-            <div class="row"><span>Amount</span><strong>{{ formattedAmount }}</strong></div>
-            <div class="row"><span>Reference</span><strong>{{ session.reference }}</strong></div>
-          </div>
-          <p class="muted small">
-            In test mode, simulate what happens after a customer makes a transfer.
-          </p>
-          <div class="btn-group">
-            <button class="btn primary" :disabled="processing" @click="submitBankTransfer(true)">
-              {{ processing ? 'Processing…' : "I've made the transfer" }}
-            </button>
-            <!-- <button class="btn ghost" :disabled="processing" @click="submitBankTransfer(false)">
-              Simulate failed transfer
-            </button> -->
-          </div>
         </div>
       </div>
 
@@ -150,15 +146,16 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 
 // ---- Config ----
-// Point this at your Supabase Edge Function base URL if you want the widget
-// to actually update transaction status. Leave as-is to run fully mocked
-// (no network calls) for local/frontend-only testing.
-const CALLBACK_ENDPOINT = import.meta.env.VITE_QUIDLY_CALLBACK_URL || ''
+// Point this at your Supabase Edge Function base URL
+// The widget will call payment-verify to update transaction status
+const PAYMENT_VERIFY_ENDPOINT =
+  import.meta.env.VITE_PAYMENT_VERIFY_URL ||
+  'https://syaxbgcwixomicckmfwq.supabase.co/functions/v1/payment-verify'
 
-// ---- Session (from URL query params, as produced by your init function) ----
+// ---- Session (from URL query params) ----
 const session = reactive({
   valid: false,
   sessionId: '',
@@ -171,17 +168,16 @@ const session = reactive({
 })
 
 const loadingSession = ref(true)
-const method = ref('bank_transfer')
 const processing = ref(false)
-const formError = ref('')
+const bankError = ref('')
 const result = ref(null) // { status: 'completed' | 'failed', reason }
+const copiedField = ref('')
 
-const card = reactive({
-  number: '',
-  expiry: '',
-  cvv: '',
-  name: '',
-})
+// ---- Expiry countdown ----
+const EXPIRY_MINUTES = 30
+const expiresAt = ref(0)
+const now = ref(Date.now())
+let timerHandle = null
 
 const formattedAmount = computed(() => {
   const n = Number(session.amount || 0)
@@ -191,6 +187,23 @@ const formattedAmount = computed(() => {
     minimumFractionDigits: 2,
   }).format(n)
 })
+
+const rawAmountString = computed(() => String(Number(session.amount || 0)))
+
+const formattedTime = computed(() => {
+  const msLeft = Math.max(0, expiresAt.value - now.value)
+  const totalSeconds = Math.floor(msLeft / 1000)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+})
+
+function startTransferTimer() {
+  expiresAt.value = Date.now() + EXPIRY_MINUTES * 60 * 1000
+  timerHandle = setInterval(() => {
+    now.value = Date.now()
+  }, 1000)
+}
 
 onMounted(() => {
   const params = new URLSearchParams(window.location.search)
@@ -212,69 +225,83 @@ onMounted(() => {
   session.returnUrl = params.get('return_url') || ''
   session.valid = true
   loadingSession.value = false
+
+  if (session.valid) {
+    startTransferTimer()
+  }
 })
 
-function formatCardNumber(value) {
-  const digits = value.replace(/\D/g, '').slice(0, 16)
-  return digits.replace(/(.{4})/g, '$1 ').trim()
-}
+onUnmounted(() => {
+  if (timerHandle) clearInterval(timerHandle)
+})
 
-function formatExpiry(value) {
-  const digits = value.replace(/\D/g, '').slice(0, 4)
-  if (digits.length <= 2) return digits
-  return `${digits.slice(0, 2)}/${digits.slice(2)}`
-}
-
-function validateCard() {
-  const digits = card.number.replace(/\s/g, '')
-  if (digits.length < 12) return 'Enter a valid card number'
-  if (!/^\d{2}\/\d{2}$/.test(card.expiry)) return 'Enter expiry as MM/YY'
-  if (card.cvv.length < 3) return 'Enter a valid CVV'
-  if (!card.name.trim()) return "Enter the cardholder's name"
-  return ''
-}
-
-async function submitCard() {
-  formError.value = validateCard()
-  if (formError.value) return
-
-  processing.value = true
-  await sleep(1200) // simulate network/processing latency
-
-  const digits = card.number.replace(/\s/g, '')
-  const outcome = digits.endsWith('0000') ? 'failed' : 'success'
-  await finishPayment(outcome, outcome === 'failed' ? 'Card declined (simulated)' : null)
+async function copyText(value, field) {
+  try {
+    await navigator.clipboard.writeText(String(value))
+    copiedField.value = field
+    setTimeout(() => {
+      if (copiedField.value === field) copiedField.value = ''
+    }, 1500)
+  } catch (error) {
+    console.error('Copy failed:', error)
+  }
 }
 
 async function submitBankTransfer(success) {
   processing.value = true
-  await sleep(1000)
-  await finishPayment(
-    success ? 'success' : 'failed',
-    success ? null : 'Bank transfer not confirmed (simulated)'
-  )
+  bankError.value = ''
+
+  try {
+    console.log('Verifying bank transfer payment...')
+    console.log('Endpoint:', PAYMENT_VERIFY_ENDPOINT)
+    console.log('Session ID:', session.sessionId)
+
+    const response = await fetch(PAYMENT_VERIFY_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        session_id: session.sessionId,
+        outcome: success ? 'success' : 'failed',
+        payment_method: 'bank_transfer',
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      console.error('Payment verification failed:', data)
+      bankError.value = data.error || 'Payment verification failed'
+      processing.value = false
+      return
+    }
+
+    console.log('Payment verification response:', data)
+
+    if (data.success) {
+      await finishPayment(
+        data.data.outcome === 'success' ? 'success' : 'failed',
+        data.data.failed_reason || null
+      )
+    } else {
+      bankError.value = data.error || 'Payment verification failed'
+      processing.value = false
+    }
+  } catch (error) {
+    console.error('Payment verification error:', error)
+    bankError.value =
+      error instanceof Error
+        ? error.message
+        : 'Failed to verify payment. Please try again.'
+    processing.value = false
+  }
 }
 
 async function finishPayment(outcome, reason) {
   let status = outcome === 'success' ? 'completed' : 'failed'
 
-  // Optionally notify your backend so the transaction row updates
-  if (CALLBACK_ENDPOINT) {
-    try {
-      await fetch(CALLBACK_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          session_id: session.sessionId,
-          outcome: outcome === 'success' ? 'success' : 'failed',
-          payment_method: method.value,
-        }),
-      })
-    } catch (e) {
-      console.error('Callback failed', e)
-    }
-  }
-
+  if (timerHandle) clearInterval(timerHandle)
   processing.value = false
   result.value = { status, reason }
 }
@@ -285,10 +312,6 @@ function returnToMerchant() {
   url.searchParams.set('reference', session.reference)
   url.searchParams.set('status', result.value.status)
   window.location.href = url.toString()
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 </script>
 
@@ -305,7 +328,7 @@ function sleep(ms) {
 
 .checkout-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 500px;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(20, 30, 60, 0.08);
@@ -371,66 +394,144 @@ function sleep(ms) {
   font-weight: 600;
 }
 
-.tabs {
-  display: flex;
-  gap: 6px;
-  background: #f1f2f6;
-  padding: 4px;
-  border-radius: 10px;
-  margin-bottom: 18px;
+/* ---- Bank transfer card, styled after the dummy checkout ---- */
+.transfer-card {
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid #d7e3e7;
 }
 
-.tab {
-  flex: 1;
+.transfer-amount {
+  background: #e8f2f4;
+  padding: 22px 20px;
+  text-align: center;
+}
+
+.transfer-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0;
+}
+
+.transfer-copy-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.transfer-amount-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #334155;
+  margin: 0;
+}
+
+.copy-btn {
   border: none;
   background: transparent;
-  padding: 8px 0;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #666;
+  color: #4d7c85;
   cursor: pointer;
-}
-
-.tab.active {
-  background: #fff;
-  color: #1a1a2e;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 13px;
-  color: #444;
-}
-
-.field input {
-  border: 1px solid #dde1ea;
-  border-radius: 10px;
-  padding: 11px 12px;
   font-size: 15px;
-  outline: none;
+  line-height: 1;
+  padding: 2px;
 }
 
-.field input:focus {
-  border-color: #2f6bff;
+.copy-btn:hover {
+  color: #2f5963;
 }
 
-.field-row {
-  display: flex;
-  gap: 12px;
+.transfer-row-block {
+  background: #fff;
+  padding: 18px 20px;
+  text-align: center;
 }
 
-.field-row .field {
-  flex: 1;
+.transfer-row-block.bordered {
+  border-top: 1px solid #f1f5f7;
+}
+
+.transfer-sublabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0;
+}
+
+.transfer-bank-name {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #315460;
+}
+
+.transfer-account-number {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #263d46;
+}
+
+.transfer-account-alias {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.transfer-reference {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #263d46;
+}
+
+.transfer-expiry {
+  background: #f8fafb;
+  padding: 16px;
+  text-align: center;
+}
+
+.transfer-expiry p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.transfer-expiry-time {
+  font-weight: 700;
+  color: #315460;
+}
+
+.hint {
+  text-align: center;
+  padding: 12px 4px 0;
+}
+
+.transfer-confirm-btn {
+  width: 90%;
+  margin-top: 4px;
+  border: none;
+  background: linear-gradient(to right, #22c55e, #7e22ce, #0891b2);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 16px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.transfer-confirm-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.transfer-confirm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn {
@@ -440,6 +541,7 @@ function sleep(ms) {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .btn.primary {
@@ -447,27 +549,9 @@ function sleep(ms) {
   color: #fff;
 }
 
-.btn.primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn.ghost {
-  background: #fff;
-  color: #d33;
-  border: 1px solid #f0c9c9;
-}
-
-.btn-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.bank-details {
-  background: #f8f9fc;
-  border-radius: 10px;
-  padding: 14px;
+.btn.primary:hover:not(:disabled) {
+  background: #1e4cc4;
+  box-shadow: 0 4px 12px rgba(47, 107, 255, 0.3);
 }
 
 .muted {
@@ -479,16 +563,14 @@ function sleep(ms) {
   font-size: 12px;
 }
 
-.test-hint {
-  font-size: 12px;
-  color: #999;
-  text-align: center;
-}
-
 .form-error {
   color: #d33;
   font-size: 13px;
-  margin: -6px 0 0;
+  background: #fef0f0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border-left: 3px solid #d33;
+  margin: 12px 0 0;
 }
 
 .state-block {
@@ -531,7 +613,9 @@ function sleep(ms) {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .footer {
