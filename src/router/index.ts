@@ -22,6 +22,12 @@ const router = createRouter({
   component: () => import('@/views/Widget.vue'),
    meta: { requiresAuth: true }
 },
+{
+  path: '/kyc',
+  name: 'kyc',
+  component: () => import('@/views/Kyc.vue'),
+   meta: { requiresAuth: true }
+},
 { path: '/dashboard', name: 'dashboard', component: () => import('@/views/DashboardOverview.vue'), meta: { requiresAuth: true } },
 { path: '/api-keys', name: 'api-keys', component: () => import('@/views/ApiKeys.vue'), meta: { requiresAuth: true } },
 { path: '/events', name: 'events', component: () => import('@/views/EventsPage.vue'), meta: { requiresAuth: true } },
