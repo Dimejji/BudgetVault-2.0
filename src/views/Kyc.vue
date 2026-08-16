@@ -2,7 +2,7 @@
     <MainLayout>
          <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 px-4 py-8 md:py-12">
     <!-- Header -->
-    <div class="max-w-4xl mx-auto mb-8">
+    <div class="mb-8">
       <div class="flex items-center gap-3 mb-2">
         <div class="p-2 bg-blue-100 rounded-lg">
           <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,7 +15,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="max-w-4xl mx-auto">
+    <div class="mx-auto">
       <!-- Status Alert -->
       <div v-if="kycStatus" class="mb-8">
         <KYCStatusCard :status="kycStatus" :approved-date="partner?.kyc_approved_at" />
@@ -229,7 +229,6 @@
                   <v-btn
                     color="primary"
                     size="large"
-                    :disabled="uploadedDocuments.length < requiredDocuments.length"
                     class="flex-1"
                     @click="currentStep++"
                   >
@@ -394,6 +393,13 @@ import StepIndicator from '@/components/Stepindicator.vue'
 import Documentuploadfield from '@/components/Documentuploadfield.vue'
 import Bankaccountcard from '@/components/Bankaccountcard.vue'
 import MainLayout from '@/layouts/MainLayout.vue'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+)
+
 
 // Get partner ID from user or route params
 const partnerId = ref('')
@@ -484,65 +490,68 @@ const isStepComplete = (index: number) => {
 }
 
 const submitBusinessInfo = async () => {
-  try {
-    const submission = await submitKYCForm({
-      ...businessForm.value,
-      director_full_name: '',
-      director_id_type: 'nin',
-      director_id_number: '',
-      director_bvn: '',
-    })
+     currentStep.value++
+//   try {
+//     const submission = await submitKYCForm({
+//       ...businessForm.value,
+//       director_full_name: '',
+//       director_id_type: 'nin',
+//       director_id_number: '',
+//       director_bvn: '',
+//     })
 
-    if (submission) {
-      currentSubmission.value = submission
-      successMessage.value = 'Business information saved'
-      currentStep.value++
-    }
-  } catch (err) {
-    console.error('Error submitting business info:', err)
-  }
+//     if (submission) {
+//       currentSubmission.value = submission
+//       successMessage.value = 'Business information saved'
+     
+//     }
+//   } catch (err) {
+//     console.error('Error submitting business info:', err)
+//   }
 }
 
 const submitDirectorInfo = async () => {
-  try {
-    if (!currentSubmission.value) return
+     currentStep.value++
+//   try {
+//     if (!currentSubmission.value) return
 
-    // Update existing submission with director info
-    const { error: updateError } = await supabase
-      .from('partner_kyc_submissions')
-      .update({
-        director_full_name: directorForm.value.director_full_name,
-        director_id_type: directorForm.value.director_id_type,
-        director_id_number: directorForm.value.director_id_number,
-        director_bvn: directorForm.value.director_bvn,
-      })
-      .eq('id', currentSubmission.value.id)
+//     // Update existing submission with director info
+//     const { error: updateError } = await supabase
+//       .from('partner_kyc_submissions')
+//       .update({
+//         director_full_name: directorForm.value.director_full_name,
+//         director_id_type: directorForm.value.director_id_type,
+//         director_id_number: directorForm.value.director_id_number,
+//         director_bvn: directorForm.value.director_bvn,
+//       })
+//       .eq('id', currentSubmission.value.id)
 
-    if (updateError) throw updateError
+//     if (updateError) throw updateError
 
-    successMessage.value = 'Director information saved'
-    currentStep.value++
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Failed to save director info'
-  }
+//     successMessage.value = 'Director information saved'
+//     currentStep.value++
+//   } catch (err) {
+//     error.value = err instanceof Error ? err.message : 'Failed to save director info'
+//   }
 }
 
 const submitBankAccount = async () => {
-  try {
-    const account = await addBankAccount(bankForm.value)
-    if (account) {
-      bankAccounts.value.push(account)
-      bankForm.value = {
-        bank_name: '',
-        bank_code: '',
-        account_number: '',
-        account_name: '',
-      }
-      successMessage.value = 'Bank account added'
-    }
-  } catch (err) {
-    console.error('Error adding bank account:', err)
-  }
+    currentStep.value++
+//   try {
+//     const account = await addBankAccount(bankForm.value)
+//     if (account) {
+//       bankAccounts.value.push(account)
+//       bankForm.value = {
+//         bank_name: '',
+//         bank_code: '',
+//         account_number: '',
+//         account_name: '',
+//       }
+//       successMessage.value = 'Bank account added'
+//     }
+//   } catch (err) {
+//     console.error('Error adding bank account:', err)
+//   }
 }
 
 const handleDocumentUpload = async (documentType: string, file: File) => {
@@ -581,48 +590,48 @@ const handleDeleteBank = async (accountId: string) => {
 }
 
 // Initialize
-onMounted(async () => {
-  // Get partner ID from user session or route
-  const { data: { user } } = await supabase.auth.getUser()
-  if (user?.id) {
-    partnerId.value = user.id
-  }
+// onMounted(async () => {
+//   // Get partner ID from user session or route
+//   const { data: { user } } = await supabase.auth.getUser()
+//   if (user?.id) {
+//     partnerId.value = user.id
+//   }
 
-  // Load initial data
-  const status = await fetchKYCStatus()
-  if (status) {
-    kycStatus.value = status.kyc_status
-    partner.value = status
-  }
+//   // Load initial data
+//   const status = await fetchKYCStatus()
+//   if (status) {
+//     kycStatus.value = status.kyc_status
+//     partner.value = status
+//   }
 
-  const submission = await fetchCurrentSubmission()
-  if (submission) {
-    currentSubmission.value = submission
-    businessForm.value = {
-      legal_business_name: submission.legal_business_name,
-      business_registration_number: submission.business_registration_number,
-      tax_identification_number: submission.tax_identification_number,
-      business_address: submission.business_address,
-    }
-    directorForm.value = {
-      director_full_name: submission.director_full_name,
-      director_id_type: submission.director_id_type,
-      director_id_number: submission.director_id_number,
-      director_bvn: submission.director_bvn,
-    }
+//   const submission = await fetchCurrentSubmission()
+//   if (submission) {
+//     currentSubmission.value = submission
+//     businessForm.value = {
+//       legal_business_name: submission.legal_business_name,
+//       business_registration_number: submission.business_registration_number,
+//       tax_identification_number: submission.tax_identification_number,
+//       business_address: submission.business_address,
+//     }
+//     directorForm.value = {
+//       director_full_name: submission.director_full_name,
+//       director_id_type: submission.director_id_type,
+//       director_id_number: submission.director_id_number,
+//       director_bvn: submission.director_bvn,
+//     }
 
-    const docs = await fetchKYCDocuments(submission.id)
-    uploadedDocuments.value = docs
-  }
+//     const docs = await fetchKYCDocuments(submission.id)
+//     uploadedDocuments.value = docs
+//   }
 
-  const accounts = await fetchBankAccounts()
-  bankAccounts.value = accounts
+//   const accounts = await fetchBankAccounts()
+//   bankAccounts.value = accounts
 
-  const completion = await getKYCCompletionStatus()
-  if (completion?.isComplete) {
-    allStepsComplete.value = true
-  }
-})
+//   const completion = await getKYCCompletionStatus()
+//   if (completion?.isComplete) {
+//     allStepsComplete.value = true
+//   }
+// })
 </script>
 
 <style scoped>

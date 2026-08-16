@@ -118,6 +118,13 @@ const menuItems = [
     bg: '#fce4ec'
   },
   {
+  nav: 'kyc',
+  label: 'Kyc',
+  icon: 'mdi mdi-account-check',
+  to: '/kyc',
+  bg: '#fce4ec'
+},
+  {
     nav: 'settings',
     label: 'Settings',
     icon: 'mdi mdi-cog-outline',
