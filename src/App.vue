@@ -8,3 +8,9 @@ import { RouterView } from 'vue-router'
     <RouterView />
 
 </template>
+
+<style>
+    .v-btn{
+        text-transform: none;
+    }
+</style>

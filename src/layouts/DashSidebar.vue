@@ -72,7 +72,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import {useAuthStore} from "@/stores/authStore"
 
+const authStore = useAuthStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -163,8 +165,8 @@ const navigateTo = (item: any) => {
 
 // Sign out handler
 const signOut = async () => {
- 
-    router.push('/login')
+  authStore.logout
+    router.push('/')
 
 }
 </script>

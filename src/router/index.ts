@@ -38,10 +38,11 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  const auth = useAuthStore()
-  if (to.meta.requiresAuth && !auth.isAuthenticated) return next({ name: 'login' })
-  if (to.meta.guestOnly && auth.isAuthenticated) return next({ name: 'dashboard' })
-  next()
-})
+// router.beforeEach((to, from, next) => {
+//   const auth = useAuthStore()
+//   if (to.meta.requiresAuth && !auth.isAuthenticated) return next({ name: 'login' })
+//   if (to.meta.guestOnly && auth.isAuthenticated) return next({ name: 'dashboard' })
+//   next()
+// })
+
 export default router
