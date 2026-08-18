@@ -17,6 +17,12 @@ const router = createRouter({
   meta: { guestOnly: true }
 },
 {
+  path: '/docs',
+  name: 'docs',
+  component: () => import('@/views/Documentation.vue'),
+  meta: { guestOnly: true }
+},
+{
   path: '/widget',
   name: 'widget',
   component: () => import('@/views/Widget.vue'),
