@@ -132,6 +132,13 @@ const menuItems = [
     icon: 'mdi mdi-cog-outline',
     to: '/settings',
     bg: '#f5f5f5'
+  },
+  {
+    nav: 'docs',
+    label: 'Documentation',
+    icon: 'mdi mdi-book-open-page-variant-outline',
+    to: '/docs',
+    bg: '#f5f5f5'
   }
 ]
 

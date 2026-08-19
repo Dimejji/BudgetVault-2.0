@@ -1,38 +1,13 @@
 <template>
   <v-app class="font-sans">
     <!-- ============ TOP BAR ============ -->
-    <v-app-bar flat height="64" color="white" class="border-b border-gray-200 px-4">
+    <v-app-bar flat height="64" color="white" class="border-gray-200 px-4 mx-auto flex justify-center align-center text-center">
       <div class="flex items-center gap-1 mr-6">
-        <span class="text-[22px] font-extrabold tracking-tight text-slate-900">quidly</span>
+        <span class="text-[22px] font-extrabold tracking-tight text-slate-900">quidly partner</span>
         <span class="text-[11px] font-semibold text-blue-600 self-start mt-0.5">docs</span>
       </div>
 
-      <v-text-field
-        v-model="search"
-        density="compact"
-        variant="solo"
-        flat
-        bg-color="#F3F4F6"
-        hide-details
-        prepend-inner-icon="mdi-magnify"
-        placeholder="Search sandbox keys, webhooks, check-in…"
-        class="max-w-[420px] rounded-lg text-sm"
-        style="border-radius: 10px"
-      >
-        <template #append-inner>
-          <span class="text-[11px] text-gray-400 border border-gray-300 rounded px-1.5 py-0.5">Ctrl K</span>
-        </template>
-      </v-text-field>
-
-      <v-spacer />
-
-      <v-btn variant="outlined" color="grey-darken-2" class="normal-case mr-2" size="small">Support</v-btn>
-      <v-btn color="#2563EB" class="normal-case text-white mr-2" size="small" append-icon="mdi-chevron-right">
-        Dashboard
-      </v-btn>
-      <v-btn icon variant="text" size="small">
-        <v-icon size="20">mdi-monitor</v-icon>
-      </v-btn>
+      
     </v-app-bar>
 
     <!-- ============ SECTION TABS ============ -->
@@ -113,7 +88,7 @@
                 <v-col v-for="card in filteredQuickLinks" :key="card.title" cols="12" sm="6" md="4">
                   <v-card
                     flat
-                    class="border border-gray-200 rounded-xl p-4 h-full hover:border-blue-400 hover:shadow-sm transition cursor-pointer"
+                    class="pa-4 border border-gray-200 rounded-xl p-4 h-full hover:border-blue-400 hover:shadow-sm transition cursor-pointer"
                     @click="goTo(card.tab, card.key)"
                   >
                     <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center mb-3">
