@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>BudgetVault — Create Account</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Inter, Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #f7f9fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #111827;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      padding: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: 0 15px 45px rgba(0,0,0,0.08);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      color: #16a34a;
+      margin-bottom: 32px;
+    }
+
+    .progress {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 32px;
+    }
+
+    .progress span {
+      height: 5px;
+      flex: 1;
+      border-radius: 10px;
+      background: #e5e7eb;
+    }
+
+    .progress span.active {
+      background: #16a34a;
+    }
+
+    h1 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.1);
+    }
+
+    .button {
+      width: 100%;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      background: #16a34a;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .button:hover {
+      background: #15803d;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: #6b7280;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* BVN MODAL */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 460px;
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      position: relative;
+      animation: popup .25s ease;
+    }
+
+    @keyframes popup {
+      from {
+        opacity: 0;
+        transform: translateY(15px) scale(.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 18px;
+      border: none;
+      background: #f3f4f6;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .bvn-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: #dcfce7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .security-note {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 14px;
+      margin: 18px 0;
+      color: #166534;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .success {
+      display: none;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: #dcfce7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 26px 20px;
+        border-radius: 18px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+
+      .modal {
+        padding: 25px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="card">
+
+      <div class="logo">BudgetVault</div>
+
+      <div class="progress">
+        <span class="active"></span>
+        <span class="active"></span>
+        <span class="active"></span>
+        <span></span>
+      </div>
+
+      <h1>Let's set up your account</h1>
+
+      <p class="subtitle">
+        Tell us a little about yourself so we can personalize your BudgetVault experience.
+      </p>
+
+      <div class="form-group">
+        <label>First name</label>
+        <input
+          type="text"
+          id="firstName"
+          placeholder="Enter your first name"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Last name</label>
+        <input
+          type="text"
+          id="lastName"
+          placeholder="Enter your last name"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Phone number</label>
+        <input
+          type="tel"
+          id="phone"
+          placeholder="+234 800 000 0000"
+        />
+      </div>
+
+      <button class="button" onclick="continueOnboarding()">
+        Continue
+      </button>
+
+      <div class="back" onclick="history.back()">
+        ← Go back
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- BVN VERIFICATION MODAL -->
+
+  <div class="modal-overlay" id="bvnModal">
+
+    <div class="modal">
+
+      <button class="close" onclick="closeBvnModal()">×</button>
+
+      <div id="bvnForm">
+
+        <div class="bvn-icon">
+          🔐
+        </div>
+
+        <h1>Verify your identity</h1>
+
+        <p class="subtitle">
+          To keep your BudgetVault account secure, we need to verify your
+          identity using your Bank Verification Number (BVN).
+        </p>
+
+        <div class="form-group">
+
+          <label>Bank Verification Number</label>
+
+          <input
+            type="text"
+            id="bvn"
+            maxlength="11"
+            inputmode="numeric"
+            placeholder="Enter your 11-digit BVN"
+          />
+
+        </div>
+
+        <div class="security-note">
+          🔒 Your BVN is used only for identity verification.
+          BudgetVault will never ask for your bank PIN or password.
+        </div>
+
+        <button class="button" onclick="verifyBvn()">
+          Verify BVN
+        </button>
+
+      </div>
+
+
+      <!-- SUCCESS -->
+
+      <div class="success" id="successScreen">
+
+        <div class="success-icon">
+          ✓
+        </div>
+
+        <h1>You're verified!</h1>
+
+        <p class="subtitle">
+          Your identity has been successfully verified.
+          Welcome to BudgetVault.
+        </p>
+
+        <button class="button" onclick="finishOnboarding()">
+          Continue to BudgetVault
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+<script>
+
+  function continueOnboarding() {
+
+    const firstName = document.getElementById("firstName").value.trim();
+    const lastName = document.getElementById("lastName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+
+    if (!firstName || !lastName || !phone) {
+
+      alert("Please complete your details before continuing.");
+
+      return;
+    }
+
+    // Open BVN verification
+    document.getElementById("bvnModal").classList.add("show");
+  }
+
+
+  function closeBvnModal() {
+
+    document
+      .getElementById("bvnModal")
+      .classList.remove("show");
+  }
+
+
+  function verifyBvn() {
+
+    const bvn = document
+      .getElementById("bvn")
+      .value
+      .trim();
+
+    if (!/^\d{11}$/.test(bvn)) {
+
+      alert("Please enter a valid 11-digit BVN.");
+
+      return;
+    }
+
+    /*
+      DEMO ONLY
+
+      This simulates successful BVN verification.
+
+      The real application should connect this
+      to the backend/approved identity verification
+      service instead of handling BVN verification
+      directly in the browser.
+    */
+
+    document.getElementById("bvnForm").style.display = "none";
+
+    document.getElementById("successScreen").style.display = "block";
+  }
+
+
+  function finishOnboarding() {
+
+    // Change this later to the actual dashboard route
+    window.location.href = "index.html";
+  }
+
+</script>
+
+</body>
+</html>
