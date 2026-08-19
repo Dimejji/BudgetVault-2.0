@@ -128,7 +128,7 @@ const goHome = () => {
 
 const initials = ref('U')
 const handleLogout = async () => {
-  router.push('/login')
+  router.push('/')
 }
 
 // SUPPORT DROPDOWN (mobile) — teleported, positioned via button's viewport rect
