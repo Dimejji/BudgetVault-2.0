@@ -40,7 +40,6 @@ async function handleLogin() {
           <v-icon icon="mdi-orbit-variant" size="32" color="#2563eb" />
         </div>
 
-        <h1 class="login-title">Log in to Voima</h1>
         <p class="login-subtitle">Welcome back. Please enter your details.</p>
 
         <v-form ref="form" @submit.prevent="handleLogin" class="mt-8">
@@ -105,6 +104,11 @@ async function handleLogin() {
           >
             Log in
           </v-btn>
+
+          <p class="login-footer mt-4">
+            Dont have an account?
+            <router-link to="/register" class="forgot-link">Sign up here</router-link>
+          </p>
         </v-form>
       </div>
     </div>

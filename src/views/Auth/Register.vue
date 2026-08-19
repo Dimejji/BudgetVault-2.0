@@ -55,7 +55,7 @@ async function handleRegister() {
     const result = await authStore.register(payload)
 
     successMessage.value =
-      result?.message || 'Account created. Please check your email to verify your account.'
+      result?.message || 'Account created and verified, proceed to Login.'
 
     // Give the user a moment to see the success message before redirecting
     setTimeout(() => {
@@ -205,7 +205,7 @@ async function handleRegister() {
 
           <p class="login-footer mt-4">
             Already have an account?
-            <router-link to="/login" class="forgot-link">Log in</router-link>
+            <router-link to="/" class="forgot-link">Log in</router-link>
           </p>
         </v-form>
       </div>
